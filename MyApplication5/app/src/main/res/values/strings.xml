@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Template Matching</string>
+    <string name="buttonLoadTemplate">Load Template</string>
+    <string name="buttonLoadTest">Load Test</string>
+    <string name="buttonGray">Gray</string>
+    <string name="buttonBlackWhite">Hitam Putih</string>
+    <string name="buttonTemplateMatching">Template Matching</string>
 </resources>
