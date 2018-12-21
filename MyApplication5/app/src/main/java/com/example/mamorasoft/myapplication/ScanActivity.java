@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.github.kimkevin.cachepot.CachePot;
 
@@ -31,6 +32,7 @@ public class ScanActivity extends AppCompatActivity {
 
     Bitmap bitmap, bitmapResult;
 
+
     private static final int MAX_HEIGHT = 500;
 
     @Override
@@ -40,7 +42,6 @@ public class ScanActivity extends AppCompatActivity {
 
         selectionImageView = (QuadrilateralSelectionImageView) findViewById(R.id.polygonView);
         btnScan = (Button) findViewById(R.id.btnScan);
-
 
         bitmap = CachePot.getInstance().pop("bitmapCamera");
         selectionImageView.setImageBitmap(bitmap);
@@ -208,15 +209,13 @@ public class ScanActivity extends AppCompatActivity {
 
             Mat transformed = perspectiveTransform(orig, pointFS);
 
-            orig.release();
-            transformed.release();
-
             Bitmap bm = Bitmap.createBitmap(transformed.width(), transformed.height(), Bitmap.Config.ARGB_8888);
             org.opencv.android.Utils.matToBitmap(transformed, bm);
 
             selectionImageView.setImageBitmap(bm);
+
             CachePot.getInstance().push("bitmapSelected", bm);
-            startActivity(new Intent(ScanActivity.this, MatchingActivity.class));
+//            startActivity(new Intent(ScanActivity.this, MatchingActivity.class));
         }
     }
 }
