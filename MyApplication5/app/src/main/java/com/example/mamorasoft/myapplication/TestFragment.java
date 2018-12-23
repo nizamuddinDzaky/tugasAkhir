@@ -53,7 +53,7 @@ public class TestFragment extends Fragment {
     private Bitmap bitmapTest, bitmapBlackWhiteTemplate, bitmapBlackWhiteTest, bitmapResult;
 
     private ImageView imageViewTest;
-    private Button btnLoadTest, btnCameraTest, btnBlackWhite, btnTemplateMatching;
+    private Button btnLoadTest, btnCameraTest, btnBlackWhite, btnTemplateMatching,btn_intent;
 
     private QuadrilateralSelectionImageView selectionImageView;
 
@@ -84,6 +84,7 @@ public class TestFragment extends Fragment {
         imageViewTest = (ImageView) viewRoot.findViewById(R.id.iv_testImage);
         btnLoadTest = (Button) viewRoot.findViewById(R.id.btn_loadTest);
         btnCameraTest = (Button) viewRoot.findViewById(R.id.btn_loadTest_camera);
+        btn_intent= (Button) viewRoot.findViewById(R.id.btn_intent);
         btnBlackWhite = (Button) viewRoot.findViewById(R.id.btn_blackWhiteTest);
         btnTemplateMatching = (Button) viewRoot.findViewById(R.id.btn_templateMatching);
 
@@ -100,6 +101,14 @@ public class TestFragment extends Fragment {
             public void onClick(View v) {
                 Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intentCamera, RESULT_LOAD_CAMERA_IMAGE_TEST);
+            }
+        });
+
+        btn_intent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toMain = new Intent(getActivity(), MainActivity.class);
+                startActivity(toMain);
             }
         });
 
@@ -490,7 +499,7 @@ public class TestFragment extends Fragment {
 
                 imageViewTest.setImageBitmap(bitmapCamera);
                 CachePot.getInstance().push("bitmapCamera", bitmapCamera);
-                startActivity(new Intent(getActivity(), ScanActivity.class));
+                startActivity(new Intent(getActivity(), MainActivity.class));
             }
         }
     }

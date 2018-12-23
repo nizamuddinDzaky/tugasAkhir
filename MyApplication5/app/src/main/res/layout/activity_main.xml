@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--<ImageView-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="300dp"-->
+        <!--android:id="@+id/image_ori"-->
+        <!--android:layout_gravity="center_horizontal"/>-->
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/image_greyscale"
+            android:layout_gravity="center_horizontal"/>
+
+        <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/button_greyscle"-->
+        <!--android:text="GreyScale"-->
+        <!--android:layout_gravity="center_horizontal"/>-->
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/image_edge"
+            android:layout_gravity="center_horizontal"/>
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/image_threshold"
+            android:layout_gravity="center_horizontal"/>
+
+        <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/button_edge"-->
+        <!--android:text="Edge"-->
+        <!--android:layout_gravity="center_horizontal"/>-->
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/image_contour"
+            android:layout_gravity="center_horizontal"/>
+
+        <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/button_contous"-->
+        <!--android:text="Countours"-->
+        <!--android:layout_gravity="center_horizontal"/>-->
+
+        <com.example.mamorasoft.myapplication.QuadrilateralSelectionImageView
+            android:id="@+id/polygonView"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/image_result"
+            android:layout_gravity="center_horizontal"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan" />
+
+        <Button
+            android:id="@+id/btn_load"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan" />
+    </LinearLayout>
+
+</ScrollView>
