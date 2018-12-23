@@ -127,6 +127,7 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     private Bitmap applyThreshold(Mat src) {
+
         Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
 
         Imgproc.GaussianBlur(src, src, new Size(5, 5), 0);
