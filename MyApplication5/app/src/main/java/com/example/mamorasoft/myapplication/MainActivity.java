@@ -1,5 +1,6 @@
 package com.example.mamorasoft.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -7,7 +8,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.kimkevin.cachepot.CachePot;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
@@ -36,7 +37,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     QuadrilateralSelectionImageView mSelectionImageView;
-    Button mButton, btn_load;
+    Button btnScan, btnLoadGalery, btnOk;
 
     Bitmap mBitmap;
     Bitmap bitmap_edge, bitmap_greyScale, bitmap_contour, bitmap_threshold;
@@ -57,26 +58,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        image_greyscale=(ImageView)findViewById(R.id.image_greyscale);
-        image_edge=(ImageView)findViewById(R.id.image_edge);
-        image_contour=(ImageView)findViewById(R.id.image_contour);
-        image_threshold=(ImageView)findViewById(R.id.image_threshold);
+//        image_greyscale=(ImageView)findViewById(R.id.image_greyscale);
+//        image_edge=(ImageView)findViewById(R.id.image_edge);
+//        image_contour=(ImageView)findViewById(R.id.image_contour);
+//        image_threshold=(ImageView)findViewById(R.id.image_threshold);
         image_result=(ImageView)findViewById(R.id.image_result);
+        image_result.setVisibility(View.GONE);
 
         mSelectionImageView = (QuadrilateralSelectionImageView) findViewById(R.id.polygonView);
-        mButton = (Button) findViewById(R.id.button);
-        btn_load = (Button) findViewById(R.id.btn_load);
+        btnScan = (Button) findViewById(R.id.btn_scan);
+        btnLoadGalery = (Button) findViewById(R.id.btn_loadGalery_test);
+        btnOk = (Button) findViewById(R.id.btn_ok);
 
-        btn_load.setOnClickListener(new View.OnClickListener() {
+        btnLoadGalery.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("WrongConstant")
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 0);
+                if (!(mSelectionImageView.getVisibility()==0x00000000)){
+                    mSelectionImageView.setVisibility(View.VISIBLE);
+                    image_result.setVisibility(View.GONE);
+                }
             }
         });
-        mButton.setOnClickListener(new View.OnClickListener() {
+
+        btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<PointF> points = mSelectionImageView.getPoints();
@@ -87,22 +96,29 @@ public class MainActivity extends AppCompatActivity {
                     org.opencv.android.Utils.bitmapToMat(mBitmap, orig);
                     org.opencv.android.Utils.bitmapToMat(bitmap_threshold, orig2);
 
-                    Log.i("UkuranBitmap", "awal: "+orig.size());
-                    Log.i("UkuranBitmap", "akhir: "+orig2.size());
 
                     Mat transformed = perspectiveTransform(orig, points);
-                    mResult = applyThreshold(transformed);
+//                    mResult = applyThreshold(transformed);
 
-//                    if (mResultDialog.getCustomView() != null) {
-//                        PhotoView photoView = (PhotoView) mResultDialog.getCustomView().findViewById(R.id.imageView);
-//                        photoView.setImageBitmap(mResult);
-//                        mResultDialog.show();
-                        image_result.setImageBitmap(mResult);
-//                    }
+                    mResult = Bitmap.createBitmap(transformed.width(), transformed.height(), Bitmap.Config.ARGB_8888);
+                    Utils.matToBitmap(transformed, mResult);
+
+                    mSelectionImageView.setVisibility(View.GONE);
+                    image_result.setVisibility(View.VISIBLE);
+                    image_result.setImageBitmap(mResult);
 
                     orig.release();
                     transformed.release();
                 }
+            }
+        });
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CachePot.getInstance().push("bitmapSelected", mResult);
+                startActivity(new Intent(MainActivity.this, MatchingActivity.class));
+                finish();
             }
         });
     }
@@ -153,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 //                if(resultCode == RESULT_OK){
 //                    Bundle extras = data.getExtras();
 //                    mBitmap= (Bitmap) extras.get("data");
-////            imageCamera .setImageBitmap(mBitmap);
+//                    imageCamera .setImageBitmap(mBitmap);
 //                    mSelectionImageView.setImageBitmap(getResizedBitmap(mBitmap, MAX_HEIGHT));
 //                    List<PointF> points = findPoints();
 //                    mSelectionImageView.setPoints(points);
@@ -199,37 +215,21 @@ public class MainActivity extends AppCompatActivity {
         bitmap_threshold = Bitmap.createBitmap(image.cols(),image.rows(),Bitmap.Config.ARGB_8888);
 
 
-//        Log.i("TypeImage", "findPoints: "+image.type());
 
 //        GreyScale
         Imgproc.cvtColor(image, greyScale, Imgproc.COLOR_RGB2GRAY);
-//        Log.i("TypeImage", "findPoints: "+greyScale.type());
         Utils.matToBitmap(greyScale, bitmap_greyScale);
 
-        image_greyscale.setImageBitmap(bitmap_greyScale);
+//        image_greyscale.setImageBitmap(bitmap_greyScale);
 
         Imgproc.GaussianBlur(greyScale, greyScale, new Size(3, 3), 0);
         Imgproc.Canny(greyScale, edges, 80, 240);//75, 200
         Utils.matToBitmap(edges, bitmap_edge);
-        image_edge.setImageBitmap(bitmap_edge);
+//        image_edge.setImageBitmap(bitmap_edge);
 
         Imgproc.threshold(edges, threshold,100, 150, Imgproc.ADAPTIVE_THRESH_MEAN_C);
         Utils.matToBitmap(threshold, bitmap_threshold);
-        image_threshold.setImageBitmap(bitmap_threshold);
-//
-//        Imgproc.threshold(threshold, threshold,100, 150, Imgproc.ADAPTIVE_THRESH_MEAN_C);
-//
-//        Imgproc.GaussianBlur(threshold, threshold, new Size(5, 5), 0);
-//        Utils.matToBitmap(threshold, bitmap_threshold);
 //        image_threshold.setImageBitmap(bitmap_threshold);
-////        Imgproc.dilate(threshold, threshold, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2, 2)));
-//
-//        Imgproc.Canny(threshold, edges, 80, 240);//75, 200
-//
-//
-//        Utils.matToBitmap(edges, bitmap_edge);
-//
-//        image_edge.setImageBitmap(bitmap_edge);
 
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
         bitmap_contour = Bitmap.createBitmap(image.cols(),image.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(image, bitmap_contour);
-        image_contour.setImageBitmap(bitmap_contour);
+//        image_contour.setImageBitmap(bitmap_contour);
 
 ////
         MatOfPoint2f largest = findLargestContour(contours);
