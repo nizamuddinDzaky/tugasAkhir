@@ -68,14 +68,17 @@ public class TestFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        bitmapTest = CachePot.getInstance().pop("bitmapSelected");
+        if (bitmapTest==null)
+            bitmapTest = CachePot.getInstance().pop("bitmapSelected");
         imageViewTest.setImageBitmap(bitmapTest);
+        Log.e("lalala", "onresume rest fragment");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.loadLibrary("opencv_java3");
+        Log.e("lalala", "oncreate rest fragment");
     }
 
     @Override
@@ -96,7 +99,6 @@ public class TestFragment extends Fragment {
 //                startActivityForResult(intentLoadTest, RESULT_LOAD_IMAGE_TEST);
                 Intent toMain = new Intent(getActivity(), MainActivity.class);
                 startActivity(toMain);
-                getActivity().finish();
             }
         });
 

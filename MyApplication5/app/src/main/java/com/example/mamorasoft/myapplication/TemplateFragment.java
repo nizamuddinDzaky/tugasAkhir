@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.solver.Cache;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,15 @@ public class TemplateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("lalala", "oncreate template fragment");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        bitmapTemplate = Bitmap.createBitmap(bitmapTemplate);
+        imageViewTemplate.setImageBitmap(bitmapTemplate);
+        Log.e("lalala", "onresume template fragment");
     }
 
     @Override
