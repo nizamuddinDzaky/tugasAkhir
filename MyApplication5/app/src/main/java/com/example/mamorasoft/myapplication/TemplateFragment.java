@@ -18,6 +18,11 @@ import android.widget.ImageView;
 
 import com.github.kimkevin.cachepot.CachePot;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
@@ -44,15 +49,19 @@ public class TemplateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.loadLibrary("opencv_java3");
         Log.e("lalala", "oncreate template fragment");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (bitmapTemplate ==null){
+            bitmapTemplate = CachePot.getInstance().pop("bitmapSelected_template");
+        }
 //        bitmapTemplate = Bitmap.createBitmap(bitmapTemplate);
         imageViewTemplate.setImageBitmap(bitmapTemplate);
-        Log.e("lalala", "onresume template fragment");
+//        Log.e("lalala", "onresume template fragment");
     }
 
     @Override
@@ -68,21 +77,37 @@ public class TemplateFragment extends Fragment {
         btnLoadTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentLoadTemplate = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intentLoadTemplate, RESULT_LOAD_IMAGE_TEMPLATE);
+//                Intent intentLoadTemplate = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intentLoadTemplate, RESULT_LOAD_IMAGE_TEMPLATE);
+                Intent toMain = new Intent(getActivity(), MainActivity.class);
+                toMain.putExtra("fragmen", 0);
+                startActivity(toMain);
             }
         });
 
         btnBlackWhite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bitmapBlackWhiteTemplate = blackWhite(bitmapTemplate);
-                imageViewTemplate.setImageBitmap(bitmapBlackWhiteTemplate);
-                CachePot.getInstance().push("bitmapTemplate",bitmapBlackWhiteTemplate);
+            bitmapTemplate = getResizedBitmap(bitmapTemplate);
+            bitmapTemplate = edgeDetection(bitmapTemplate);
+            bitmapBlackWhiteTemplate = blackWhite(bitmapTemplate);
+            imageViewTemplate.setImageBitmap(bitmapBlackWhiteTemplate);
+            CachePot.getInstance().push("bitmapTemplate",bitmapBlackWhiteTemplate);
             }
         });
 
         return viewRoot;
+    }
+
+    private Bitmap edgeDetection(Bitmap bm) {
+        Mat edges = new Mat();
+        Mat src = new Mat();
+        Utils.bitmapToMat(bm, src);
+        Imgproc.cvtColor(src, edges, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.GaussianBlur(edges, edges, new Size(5, 5), 0);
+        Imgproc.Canny(edges, edges, 80, 240);
+        Utils.matToBitmap(edges,bm);
+        return bm;
     }
 
     public static Bitmap blackWhite(Bitmap src){

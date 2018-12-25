@@ -73,7 +73,6 @@ public class TestFragment extends Fragment {
         }
 
         imageViewTest.setImageBitmap(bitmapTest);
-        Log.e("lalala", "onresume rest fragment");
     }
 
     @Override
@@ -100,6 +99,7 @@ public class TestFragment extends Fragment {
 //                Intent intentLoadTest = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //                startActivityForResult(intentLoadTest, RESULT_LOAD_IMAGE_TEST);
                 Intent toMain = new Intent(getActivity(), MainActivity.class);
+                toMain.putExtra("fragmen", 1);
                 startActivity(toMain);
             }
         });
@@ -116,6 +116,7 @@ public class TestFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 bitmapTest = getResizedBitmap(bitmapTest);
+                bitmapTest = edgeDetection(bitmapTest);
                 bitmapBlackWhiteTest = blackWhite(bitmapTest);
                 imageViewTest.setImageBitmap(bitmapBlackWhiteTest);
             }
@@ -282,6 +283,7 @@ public class TestFragment extends Fragment {
         }
 
         for (int i =0;i<rectListTest.size();i++){
+            Log.i("hasil_cosine", hasilTemplateMatching.get(i).toString());
             if (hasilTemplateMatching.get(i) < 0.99){
                 Utils.bitmapToMat(bitmapBlackWhiteTest, matTest);
 
@@ -290,6 +292,17 @@ public class TestFragment extends Fragment {
                 Utils.matToBitmap(matTest, bitmapBlackWhiteTest);
             }
         }
+    }
+
+    private Bitmap edgeDetection(Bitmap bm) {
+        Mat edges = new Mat();
+        Mat src = new Mat();
+        Utils.bitmapToMat(bm, src);
+        Imgproc.cvtColor(src, edges, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.GaussianBlur(edges, edges, new Size(5, 5), 0);
+        Imgproc.Canny(edges, edges, 80, 240);
+        Utils.matToBitmap(edges,bm);
+        return bm;
     }
 
     public static Bitmap blackWhite(Bitmap src){

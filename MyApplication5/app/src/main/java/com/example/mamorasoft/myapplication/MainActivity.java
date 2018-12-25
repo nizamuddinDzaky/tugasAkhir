@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -116,9 +117,17 @@ public class MainActivity extends AppCompatActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CachePot.getInstance().push("bitmapSelected", mResult);
-                startActivity(new Intent(MainActivity.this, MatchingActivity.class));
-                finish();
+                Intent intent = getIntent();
+                Integer value = intent.getExtras().getInt("fragmen");
+                if (value==1){
+                    CachePot.getInstance().push("bitmapSelected", mResult);
+                    startActivity(new Intent(MainActivity.this, MatchingActivity.class));
+                    finish();
+                }else{
+                    CachePot.getInstance().push("bitmapSelected_template", mResult);
+                    startActivity(new Intent(MainActivity.this, MatchingActivity.class));
+                    finish();
+                }
             }
         });
     }
