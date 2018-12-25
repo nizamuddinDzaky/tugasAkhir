@@ -78,7 +78,7 @@ public class TemplateFragment extends Fragment {
             public void onClick(View v) {
                 bitmapBlackWhiteTemplate = blackWhite(bitmapTemplate);
                 imageViewTemplate.setImageBitmap(bitmapBlackWhiteTemplate);
-                CachePot.getInstance().push(bitmapBlackWhiteTemplate);
+                CachePot.getInstance().push("bitmapTemplate",bitmapBlackWhiteTemplate);
             }
         });
 

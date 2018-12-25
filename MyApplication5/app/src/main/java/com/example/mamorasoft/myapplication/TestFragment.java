@@ -68,8 +68,10 @@ public class TestFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (bitmapTest==null)
+        if (bitmapTest==null){
             bitmapTest = CachePot.getInstance().pop("bitmapSelected");
+        }
+
         imageViewTest.setImageBitmap(bitmapTest);
         Log.e("lalala", "onresume rest fragment");
     }
@@ -113,6 +115,7 @@ public class TestFragment extends Fragment {
         btnBlackWhite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bitmapTest = getResizedBitmap(bitmapTest);
                 bitmapBlackWhiteTest = blackWhite(bitmapTest);
                 imageViewTest.setImageBitmap(bitmapBlackWhiteTest);
             }
@@ -121,10 +124,10 @@ public class TestFragment extends Fragment {
         btnTemplateMatching.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageViewTest.setImageBitmap(bitmapResult);
+//                imageViewTest.setImageBitmap(bitmapResult);
 
-//                bitmapBlackWhiteTemplate = CachePot.getInstance().pop(Bitmap.class);
-//                templatwMatching();
+                bitmapBlackWhiteTemplate = CachePot.getInstance().pop("bitmapTemplate");
+                templatwMatching();
             }
         });
 
@@ -329,6 +332,7 @@ public class TestFragment extends Fragment {
                 try {
                     bitmapTest = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                     bitmapTest = getResizedBitmap(bitmapTest);
+                    Log.e("heytayo", bitmapTest.getWidth() + " " + bitmapTest.getHeight());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
